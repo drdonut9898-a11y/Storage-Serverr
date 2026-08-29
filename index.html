@@ -16,7 +16,7 @@
         .chat-title { font-size: 18px; font-weight: bold; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
         .chat-stats { font-size: 12px; color: #94a3b8; }
         
-        /* Search Bar inside Header */
+        /* Search Bar */
         .search-input { width: 100%; padding: 8px 12px; background: #1e293b; border: 1px solid #475569; border-radius: 6px; color: #fff; font-size: 13px; outline: none; }
         .search-input:focus { border-color: #38bdf8; }
 
@@ -24,13 +24,8 @@
         .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #0b0f19; }
         
         /* Message Bubble */
-        .message-bubble { background: #1e293b; padding: 12px 15px; border-radius: 8px; max-width: 85%; word-break: break-all; position: relative; border-left: 4px solid #38bdf8; animation: fadeIn 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .message-bubble { background: #1e293b; padding: 12px 15px; border-radius: 8px; max-width: 85%; word-break: break-all; position: relative; border-left: 4px solid #38bdf8; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         .msg-text { font-size: 14px; white-space: pre-wrap; line-height: 1.4; }
         .msg-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 10px; color: #94a3b8; }
         
@@ -58,8 +53,8 @@
         <!-- Header -->
         <div class="chat-header">
             <div class="header-top">
-                <div class="chat-title">💬 Elite Store - Live Chat / Notes</div>
-                <div class="chat-stats" id="totalStats">0 messages</div>
+                <div class="chat-title">💬 Elite Store - Cloud Chat</div>
+                <div class="chat-stats" id="totalStats">Loading...</div>
             </div>
             <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search old or similar messages..." oninput="filterMessages()">
         </div>
@@ -156,11 +151,10 @@
                     });
                 });
 
-                document.getElementById('totalStatsinnerText', 'totalStats').innerText = `${allMessages.length} messages`;
                 document.getElementById('totalStats').innerText = `${allMessages.length} messages`;
                 displayMessages(allMessages);
             } catch (e) {
-                listDiv.innerHTML = `<div class="empty-chat">Error loading messages.</div>`;
+                listDiv.innerHTML = `<div class="empty-chat">Error loading messages. Check console/rules.</div>`;
             }
         }
 
@@ -173,7 +167,8 @@
             }
 
             listDiv.innerHTML = '';
-            messages.forEach((data) => {
+            // Reverse to show oldest to newest like a chat stream
+            [...messages].reverse().forEach((data) => {
                 const dateStr = data.timestamp ? new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
                 listDiv.innerHTML += `
                     <div class="message-bubble">
@@ -181,7 +176,7 @@
                         <div class="msg-footer">
                             <span>${dateStr}</span>
                             <div class="msg-actions">
-                                <button class="action-btn" onclick="copyMessage('${escapeQuotes(data.text)}')">📋 Copy</button>
+                                <button class="action-btn" onclick="copyMessage(`${escapeQuotes(data.text)}`)">📋 Copy</button>
                                 <button class="action-btn delete-btn" onclick="deleteMessage('${data.id}')">🗑️ Delete</button>
                             </div>
                         </div>
