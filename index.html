@@ -3,39 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Store - Cloud Message Saver</title>
+    <title>Elite Store - Advanced Cloud Notes</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #0f172a; color: #fff; padding: 40px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 500px; background: #1e293b; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        h2, h3 { text-align: center; color: #38bdf8; }
-        textarea, button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 6px; border: none; box-sizing: border-box; font-size: 14px; }
-        textarea { background: #334155; color: #fff; height: 100px; resize: none; outline: none; }
-        textarea:focus { border: 1px solid #38bdf8; }
-        button { background: #3b82f6; color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        button:hover { background: #2563eb; }
-        .msg-list { margin-top: 20px; background: #0f172a; padding: 15px; border-radius: 6px; max-height: 250px; overflow-y: auto; }
-        .msg-item { background: #334155; padding: 10px; margin-bottom: 8px; border-radius: 5px; word-break: break-all; font-size: 14px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #fff; padding: 30px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 600px; background: #1e293b; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); animation: fadeIn 0.5s ease-in-out; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 { text-align: center; color: #38bdf8; margin-bottom: 5px; }
+        .stats { text-align: center; color: #94a3b8; font-size: 13px; margin-bottom: 20px; }
+        
+        textarea, input[type="text"] { width: 100%; padding: 12px; margin-top: 8px; border-radius: 8px; border: 1px solid #334155; box-sizing: border-box; font-size: 14px; background: #0f172a; color: #fff; outline: none; transition: 0.2s; }
+        textarea:focus, input[type="text"]:focus { border-color: #38bdf8; box-shadow: 0 0 5px rgba(56, 189, 248, 0.3); }
+        textarea { height: 90px; resize: none; }
+
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        button { flex: 1; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 14px; }
+        .save-btn { background: #3b82f6; color: white; }
+        .save-btn:hover { background: #2563eb; }
+
+        .search-box { margin-top: 20px; position: relative; }
+
+        .msg-list { margin-top: 15px; background: #0f172a; padding: 15px; border-radius: 8px; max-height: 350px; overflow-y: auto; border: 1px solid #334155; }
+        
+        .msg-item { background: #1e293b; padding: 12px; margin-bottom: 10px; border-radius: 6px; word-break: break-all; font-size: 14px; border-left: 4px solid #38bdf8; display: flex; justify-content: space-between; align-items: flex-start; animation: slideIn 0.3s ease; }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .msg-content { flex: 1; margin-right: 10px; white-space: pre-wrap; }
+        .msg-time { font-size: 10px; color: #64748b; margin-top: 4px; display: block; }
+
+        .action-btns { display: flex; gap: 5px; }
+        .action-btn { background: #334155; border: none; color: white; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; transition: 0.2s; }
+        .action-btn:hover { background: #475569; }
+        .delete-btn:hover { background: #ef4444; }
+
         .empty { color: #94a3b8; text-align: center; font-style: italic; }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>🌐 Elite Store - Cloud Notes</h2>
+        <div class="stats" id="totalStats">Total Saved: 0 messages</div>
+        
         <textarea id="msgInput" placeholder="Apna message yahan likh..."></textarea>
-        <button onclick="saveMessage()">Save to Cloud</button>
+        <div class="btn-group">
+            <button class="save-btn" onclick="saveMessage()">Save to Cloud 🚀</button>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Purane ya similar messages search karein..." oninput="filterMessages()">
+        </div>
         
         <h3>Saved Messages</h3>
         <div class="msg-list" id="msgList">
-            <p class="empty">Loading...</p>
+            <p class="empty">Loading messages...</p>
         </div>
     </div>
 
     <!-- Firebase SDKs -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Tera Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCV_GOx143Z4OjrbnLenzgAK8qwxfeYQ3Q",
             authDomain: "expose-firemc.firebaseapp.com",
@@ -48,6 +84,8 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        
+        let allMessages = []; // Store messages locally for instant searching
 
         window.saveMessage = async function() {
             const input = document.getElementById('msgInput');
@@ -57,13 +95,34 @@
             try {
                 await addDoc(collection(db, "messages"), {
                     text: text,
-                    timestamp: new Date()
+                    timestamp: new Date().toISOString()
                 });
                 input.value = '';
                 loadMessages();
             } catch (e) {
                 alert("Error saving message: " + e);
             }
+        }
+
+        window.deleteMessage = async function(id) {
+            if (!confirm("Kya aap is message ko delete karna chahte hain?")) return;
+            try {
+                await deleteDoc(doc(db, "messages", id));
+                loadMessages();
+            } catch (e) {
+                alert("Error deleting message: " + e);
+            }
+        }
+
+        window.copyMessage = function(text) {
+            navigator.clipboard.writeText(text);
+            alert("Message copied to clipboard! 📋");
+        }
+
+        window.filterMessages = function() {
+            const queryText = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allMessages.filter(m => m.text.toLowerCase().includes(queryText));
+            displayMessages(filtered);
         }
 
         async function loadMessages() {
@@ -73,20 +132,53 @@
                 const q = query(collection(db, "messages"), orderBy("timestamp", "desc"));
                 const querySnapshot = await getDocs(q);
                 
-                if (querySnapshot.empty) {
-                    linkDivText = '<p class="empty">No messages saved yet.</p>';
-                    listDiv.innerHTML = '<p class="empty">No messages saved yet.</p>';
-                    return;
-                }
-
-                listDiv.innerHTML = '';
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    listDiv.innerHTML += `<div class="msg-item">${data.text}</div>`;
+                allMessages = [];
+                querySnapshot.forEach((document) => {
+                    allMessages.push({
+                        id: document.id,
+                        ...document.data()
+                    });
                 });
+
+                document.getElementById('totalStats').innerText = `Total Saved: ${allMessages.length} messages`;
+                displayMessages(allMessages);
             } catch (e) {
                 listDiv.innerHTML = `<p class="empty">Error loading messages.</p>`;
             }
+        }
+
+        function displayMessages(messages) {
+            const listDiv = document.getElementById('msgList');
+            
+            if (messages.length === 0) {
+                listDiv.innerHTML = '<p class="empty">No messages found.</p>';
+                return;
+            }
+
+            listDiv.innerHTML = '';
+            messages.forEach((data) => {
+                const dateStr = data.timestamp ? new Date(data.timestamp).toLocaleString() : '';
+                listDiv.innerHTML += `
+                    <div class="msg-item">
+                        <div class="msg-content">
+                            ${escapeHtml(data.text)}
+                            <span class="msg-time">${dateStr}</span>
+                        </div>
+                        <div class="action-btns">
+                            <button class="action-btn" onclick="copyMessage('${escapeQuotes(data.text)}')">📋</button>
+                            <button class="action-btn delete-btn" onclick="deleteMessage('${data.id}')">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        function escapeQuotes(text) {
+            return text.replace(/'/g, "\\'").replace(/"/g, '&quot;');
         }
 
         loadMessages();
