@@ -8,41 +8,52 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background: #0f172a; color: #f8fafc; height: 100vh; display: flex; justify-content: center; align-items: center; }
         
-        .chat-container { width: 100%; max-width: 650px; height: 90vh; background: #1e293b; border-radius: 12px; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.5); overflow: hidden; border: 1px solid #334155; }
+        .chat-container { width: 100%; max-width: 650px; height: 90vh; background: #1e293b; border-radius: 12px; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.5); overflow: hidden; border: 1px solid #334155; animation: scaleIn 0.3s ease-in-out; }
+        
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
         
         /* Chat Header */
         .chat-header { padding: 15px 20px; background: #0f172a; border-bottom: 1px solid #334155; display: flex; flex-direction: column; gap: 10px; }
         .header-top { display: flex; justify-content: space-between; align-items: center; }
         .chat-title { font-size: 18px; font-weight: bold; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
-        .chat-stats { font-size: 12px; color: #94a3b8; }
+        .chat-stats { font-size: 12px; color: #94a3b8; background: #334155; padding: 3px 8px; border-radius: 12px; }
         
         /* Search Bar */
-        .search-input { width: 100%; padding: 8px 12px; background: #1e293b; border: 1px solid #475569; border-radius: 6px; color: #fff; font-size: 13px; outline: none; }
-        .search-input:focus { border-color: #38bdf8; }
+        .search-input { width: 100%; padding: 9px 14px; background: #1e293b; border: 1px solid #475569; border-radius: 8px; color: #fff; font-size: 13px; outline: none; transition: 0.2s; }
+        .search-input:focus { border-color: #38bdf8; box-shadow: 0 0 5px rgba(56, 189, 248, 0.3); }
 
         /* Message History Area */
-        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #0b0f19; }
+        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #0b0f19; scroll-behavior: smooth; }
         
-        /* Message Bubble */
-        .message-bubble { background: #1e293b; padding: 12px 15px; border-radius: 8px; max-width: 85%; word-break: break-all; position: relative; border-left: 4px solid #38bdf8; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        /* Message Bubble Animation */
+        .message-bubble { background: #1e293b; padding: 12px 15px; border-radius: 8px; max-width: 85%; word-break: break-all; position: relative; border-left: 4px solid #38bdf8; box-shadow: 0 2px 5px rgba(0,0,0,0.2); animation: fadeInUp 0.3s ease; }
         
-        .msg-text { font-size: 14px; white-space: pre-wrap; line-height: 1.4; }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .msg-text { font-size: 14px; white-space: pre-wrap; line-height: 1.4; color: #f1f5f9; }
         .msg-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 10px; color: #94a3b8; }
         
         .msg-actions { display: flex; gap: 6px; opacity: 0.7; transition: 0.2s; }
         .message-bubble:hover .msg-actions { opacity: 1; }
         
-        .action-btn { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 12px; padding: 2px 4px; border-radius: 4px; }
-        .action-btn:hover { color: #fff; background: #334155; }
-        .delete-btn:hover { color: #ef4444; }
+        .action-btn { background: #334155; border: none; color: #cbd5e1; cursor: pointer; font-size: 11px; padding: 3px 8px; border-radius: 4px; transition: 0.2s; }
+        .action-btn:hover { color: #fff; background: #475569; }
+        .delete-btn:hover { background: #ef4444; color: #fff; }
 
         /* Bottom Input Bar */
         .chat-input-area { padding: 15px; background: #0f172a; border-top: 1px solid #334155; display: flex; gap: 10px; align-items: center; }
-        .chat-input { flex: 1; padding: 12px; background: #1e293b; border: 1px solid #475569; border-radius: 8px; color: #fff; font-size: 14px; resize: none; height: 45px; max-height: 100px; outline: none; }
-        .chat-input:focus { border-color: #38bdf8; }
+        .chat-input { flex: 1; padding: 12px; background: #1e293b; border: 1px solid #475569; border-radius: 8px; color: #fff; font-size: 14px; resize: none; height: 45px; max-height: 100px; outline: none; transition: 0.2s; }
+        .chat-input:focus { border-color: #38bdf8; box-shadow: 0 0 5px rgba(56, 189, 248, 0.3); }
         
         .send-btn { background: #3b82f6; border: none; color: white; padding: 0 20px; height: 45px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
-        .send-btn:hover { background: #2563eb; }
+        .send-btn:hover { background: #2563eb; transform: translateY(-1px); }
+        .send-btn:active { transform: translateY(0); }
 
         .empty-chat { text-align: center; color: #64748b; font-style: italic; margin-top: 40px; }
     </style>
@@ -66,7 +77,7 @@
 
         <!-- Input Bar -->
         <div class="chat-input-area">
-            <textarea class="chat-input" id="msgInput" placeholder="Type a message..." rows="1" onkeydown="checkEnter(event)"></textarea>
+            <textarea class="chat-input" id="msgInput" placeholder="Type a message... (Press Enter to send)" rows="1" onkeydown="checkEnter(event)"></textarea>
             <button class="send-btn" onclick="saveMessage()">Send 🚀</button>
         </div>
     </div>
@@ -74,7 +85,7 @@
     <!-- Firebase SDKs -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCV_GOx143Z4OjrbnLenzgAK8qwxfeYQ3Q",
@@ -111,7 +122,7 @@
                 input.value = '';
                 loadMessages();
             } catch (e) {
-                alert("Error saving message: " + e);
+                alert("Error saving message: " + e.message);
             }
         }
 
@@ -121,13 +132,17 @@
                 await deleteDoc(doc(db, "messages", id));
                 loadMessages();
             } catch (e) {
-                alert("Error deleting: " + e);
+                alert("Error deleting: " + e.message);
             }
         }
 
-        window.copyMessage = function(text) {
+        window.copyMessage = function(btn) {
+            const text = decodeURIComponent(btn.getAttribute('data-text'));
             navigator.clipboard.writeText(text);
-            alert("Copied to clipboard! 📋");
+            
+            const originalText = btn.innerText;
+            btn.innerText = "✅ Copied!";
+            setTimeout(() => { btn.innerText = originalText; }, 1500);
         }
 
         window.filterMessages = function() {
@@ -140,8 +155,7 @@
             const listDiv = document.getElementById('msgList');
             
             try {
-                const q = query(collection(db, "messages"), orderBy("timestamp", "desc"));
-                const querySnapshot = await getDocs(q);
+                const querySnapshot = await getDocs(collection(db, "messages"));
                 
                 allMessages = [];
                 querySnapshot.forEach((document) => {
@@ -151,10 +165,13 @@
                     });
                 });
 
-                document.getElementById('totalStats').innerText = `${allMessages.length} messages`;
+                // Sort messages locally (Newest at the bottom like chat)
+                allMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+                document.getElementById('totalStats').innerText = `${allMessages.length} msgs`;
                 displayMessages(allMessages);
             } catch (e) {
-                listDiv.innerHTML = `<div class="empty-chat">Error loading messages. Check console/rules.</div>`;
+                listDiv.innerHTML = `<div class="empty-chat">Error loading messages. Check Firebase rules!</div>`;
             }
         }
 
@@ -167,16 +184,17 @@
             }
 
             listDiv.innerHTML = '';
-            // Reverse to show oldest to newest like a chat stream
-            [...messages].reverse().forEach((data) => {
+            messages.forEach((data) => {
                 const dateStr = data.timestamp ? new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+                const encodedText = encodeURIComponent(data.text);
+                
                 listDiv.innerHTML += `
                     <div class="message-bubble">
                         <div class="msg-text">${escapeHtml(data.text)}</div>
                         <div class="msg-footer">
                             <span>${dateStr}</span>
                             <div class="msg-actions">
-                                <button class="action-btn" onclick="copyMessage(`${escapeQuotes(data.text)}`)">📋 Copy</button>
+                                <button class="action-btn" data-text="${encodedText}" onclick="copyMessage(this)">📋 Copy</button>
                                 <button class="action-btn delete-btn" onclick="deleteMessage('${data.id}')">🗑️ Delete</button>
                             </div>
                         </div>
@@ -188,10 +206,6 @@
 
         function escapeHtml(text) {
             return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
-
-        function escapeQuotes(text) {
-            return text.replace(/'/g, "\\'").replace(/"/g, '&quot;');
         }
 
         loadMessages();
