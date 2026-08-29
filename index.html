@@ -3,67 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Store - Advanced Cloud Notes</title>
+    <title>Elite Store - Chat Cloud</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #fff; padding: 30px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 600px; background: #1e293b; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); animation: fadeIn 0.5s ease-in-out; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #0f172a; color: #f8fafc; height: 100vh; display: flex; justify-content: center; align-items: center; }
+        
+        .chat-container { width: 100%; max-width: 650px; height: 90vh; background: #1e293b; border-radius: 12px; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.5); overflow: hidden; border: 1px solid #334155; }
+        
+        /* Chat Header */
+        .chat-header { padding: 15px 20px; background: #0f172a; border-bottom: 1px solid #334155; display: flex; flex-direction: column; gap: 10px; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; }
+        .chat-title { font-size: 18px; font-weight: bold; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
+        .chat-stats { font-size: 12px; color: #94a3b8; }
+        
+        /* Search Bar inside Header */
+        .search-input { width: 100%; padding: 8px 12px; background: #1e293b; border: 1px solid #475569; border-radius: 6px; color: #fff; font-size: 13px; outline: none; }
+        .search-input:focus { border-color: #38bdf8; }
+
+        /* Message History Area */
+        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #0b0f19; }
+        
+        /* Message Bubble */
+        .message-bubble { background: #1e293b; padding: 12px 15px; border-radius: 8px; max-width: 85%; word-break: break-all; position: relative; border-left: 4px solid #38bdf8; animation: fadeIn 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
+            from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        h2 { text-align: center; color: #38bdf8; margin-bottom: 5px; }
-        .stats { text-align: center; color: #94a3b8; font-size: 13px; margin-bottom: 20px; }
+        .msg-text { font-size: 14px; white-space: pre-wrap; line-height: 1.4; }
+        .msg-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 10px; color: #94a3b8; }
         
-        textarea, input[type="text"] { width: 100%; padding: 12px; margin-top: 8px; border-radius: 8px; border: 1px solid #334155; box-sizing: border-box; font-size: 14px; background: #0f172a; color: #fff; outline: none; transition: 0.2s; }
-        textarea:focus, input[type="text"]:focus { border-color: #38bdf8; box-shadow: 0 0 5px rgba(56, 189, 248, 0.3); }
-        textarea { height: 90px; resize: none; }
-
-        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
-        button { flex: 1; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 14px; }
-        .save-btn { background: #3b82f6; color: white; }
-        .save-btn:hover { background: #2563eb; }
-
-        .search-box { margin-top: 20px; position: relative; }
-
-        .msg-list { margin-top: 15px; background: #0f172a; padding: 15px; border-radius: 8px; max-height: 350px; overflow-y: auto; border: 1px solid #334155; }
+        .msg-actions { display: flex; gap: 6px; opacity: 0.7; transition: 0.2s; }
+        .message-bubble:hover .msg-actions { opacity: 1; }
         
-        .msg-item { background: #1e293b; padding: 12px; margin-bottom: 10px; border-radius: 6px; word-break: break-all; font-size: 14px; border-left: 4px solid #38bdf8; display: flex; justify-content: space-between; align-items: flex-start; animation: slideIn 0.3s ease; }
+        .action-btn { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 12px; padding: 2px 4px; border-radius: 4px; }
+        .action-btn:hover { color: #fff; background: #334155; }
+        .delete-btn:hover { color: #ef4444; }
+
+        /* Bottom Input Bar */
+        .chat-input-area { padding: 15px; background: #0f172a; border-top: 1px solid #334155; display: flex; gap: 10px; align-items: center; }
+        .chat-input { flex: 1; padding: 12px; background: #1e293b; border: 1px solid #475569; border-radius: 8px; color: #fff; font-size: 14px; resize: none; height: 45px; max-height: 100px; outline: none; }
+        .chat-input:focus { border-color: #38bdf8; }
         
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-10px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
+        .send-btn { background: #3b82f6; border: none; color: white; padding: 0 20px; height: 45px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .send-btn:hover { background: #2563eb; }
 
-        .msg-content { flex: 1; margin-right: 10px; white-space: pre-wrap; }
-        .msg-time { font-size: 10px; color: #64748b; margin-top: 4px; display: block; }
-
-        .action-btns { display: flex; gap: 5px; }
-        .action-btn { background: #334155; border: none; color: white; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; transition: 0.2s; }
-        .action-btn:hover { background: #475569; }
-        .delete-btn:hover { background: #ef4444; }
-
-        .empty { color: #94a3b8; text-align: center; font-style: italic; }
+        .empty-chat { text-align: center; color: #64748b; font-style: italic; margin-top: 40px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>🌐 Elite Store - Cloud Notes</h2>
-        <div class="stats" id="totalStats">Total Saved: 0 messages</div>
-        
-        <textarea id="msgInput" placeholder="Apna message yahan likh..."></textarea>
-        <div class="btn-group">
-            <button class="save-btn" onclick="saveMessage()">Save to Cloud 🚀</button>
+
+    <div class="chat-container">
+        <!-- Header -->
+        <div class="chat-header">
+            <div class="header-top">
+                <div class="chat-title">💬 Elite Store - Live Chat / Notes</div>
+                <div class="chat-stats" id="totalStats">0 messages</div>
+            </div>
+            <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search old or similar messages..." oninput="filterMessages()">
         </div>
 
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="🔍 Purane ya similar messages search karein..." oninput="filterMessages()">
+        <!-- Messages Area -->
+        <div class="chat-messages" id="msgList">
+            <div class="empty-chat">Loading messages...</div>
         </div>
-        
-        <h3>Saved Messages</h3>
-        <div class="msg-list" id="msgList">
-            <p class="empty">Loading messages...</p>
+
+        <!-- Input Bar -->
+        <div class="chat-input-area">
+            <textarea class="chat-input" id="msgInput" placeholder="Type a message..." rows="1" onkeydown="checkEnter(event)"></textarea>
+            <button class="send-btn" onclick="saveMessage()">Send 🚀</button>
         </div>
     </div>
 
@@ -85,7 +94,14 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         
-        let allMessages = []; // Store messages locally for instant searching
+        let allMessages = [];
+
+        window.checkEnter = function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                saveMessage();
+            }
+        }
 
         window.saveMessage = async function() {
             const input = document.getElementById('msgInput');
@@ -105,18 +121,18 @@
         }
 
         window.deleteMessage = async function(id) {
-            if (!confirm("Kya aap is message ko delete karna chahte hain?")) return;
+            if (!confirm("Delete this message?")) return;
             try {
                 await deleteDoc(doc(db, "messages", id));
                 loadMessages();
             } catch (e) {
-                alert("Error deleting message: " + e);
+                alert("Error deleting: " + e);
             }
         }
 
         window.copyMessage = function(text) {
             navigator.clipboard.writeText(text);
-            alert("Message copied to clipboard! 📋");
+            alert("Copied to clipboard! 📋");
         }
 
         window.filterMessages = function() {
@@ -140,10 +156,11 @@
                     });
                 });
 
-                document.getElementById('totalStats').innerText = `Total Saved: ${allMessages.length} messages`;
+                document.getElementById('totalStatsinnerText', 'totalStats').innerText = `${allMessages.length} messages`;
+                document.getElementById('totalStats').innerText = `${allMessages.length} messages`;
                 displayMessages(allMessages);
             } catch (e) {
-                listDiv.innerHTML = `<p class="empty">Error loading messages.</p>`;
+                listDiv.innerHTML = `<div class="empty-chat">Error loading messages.</div>`;
             }
         }
 
@@ -151,26 +168,27 @@
             const listDiv = document.getElementById('msgList');
             
             if (messages.length === 0) {
-                listDiv.innerHTML = '<p class="empty">No messages found.</p>';
+                listDiv.innerHTML = '<div class="empty-chat">No messages found.</div>';
                 return;
             }
 
             listDiv.innerHTML = '';
             messages.forEach((data) => {
-                const dateStr = data.timestamp ? new Date(data.timestamp).toLocaleString() : '';
+                const dateStr = data.timestamp ? new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
                 listDiv.innerHTML += `
-                    <div class="msg-item">
-                        <div class="msg-content">
-                            ${escapeHtml(data.text)}
-                            <span class="msg-time">${dateStr}</span>
-                        </div>
-                        <div class="action-btns">
-                            <button class="action-btn" onclick="copyMessage('${escapeQuotes(data.text)}')">📋</button>
-                            <button class="action-btn delete-btn" onclick="deleteMessage('${data.id}')">🗑️</button>
+                    <div class="message-bubble">
+                        <div class="msg-text">${escapeHtml(data.text)}</div>
+                        <div class="msg-footer">
+                            <span>${dateStr}</span>
+                            <div class="msg-actions">
+                                <button class="action-btn" onclick="copyMessage('${escapeQuotes(data.text)}')">📋 Copy</button>
+                                <button class="action-btn delete-btn" onclick="deleteMessage('${data.id}')">🗑️ Delete</button>
+                            </div>
                         </div>
                     </div>
                 `;
             });
+            listDiv.scrollTop = listDiv.scrollHeight;
         }
 
         function escapeHtml(text) {
