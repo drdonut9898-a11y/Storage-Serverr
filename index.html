@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Store - Glowing Cloud Chat</title>
+    <title>EliteStore | Note Center</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
         body { 
-            background: url('background.jpeg') no-repeat center center fixed; 
+            background: linear-gradient(135deg, #090d16 0%, #171124 50%, #0f172a 100%), url('background.jpeg') no-repeat center center fixed; 
+            background-blend-mode: overlay;
             background-size: cover; 
             color: #f8fafc; 
             height: 100vh; 
@@ -23,8 +24,8 @@
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 14, 23, 0.75);
-            backdrop-filter: blur(8px);
+            background: rgba(10, 14, 23, 0.70);
+            backdrop-filter: blur(10px);
             z-index: -1;
         }
         
@@ -38,7 +39,7 @@
             border-radius: 16px; 
             display: flex; 
             flex-direction: column; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 20px rgba(249, 115, 22, 0.2); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 25px rgba(249, 115, 22, 0.25); 
             overflow: hidden; 
             border: 1px solid rgba(255, 255, 255, 0.15); 
             animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
@@ -60,7 +61,7 @@
         .search-input:focus { border-color: #fb923c; box-shadow: 0 0 8px rgba(251, 146, 60, 0.4); }
 
         /* Message History Area */
-        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; background: rgba(11, 15, 25, 0.4); scroll-behavior: smooth; }
+        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; background: rgba(11, 15, 25, 0.35); scroll-behavior: smooth; }
         
         /* Message Bubble */
         .message-bubble { background: rgba(30, 41, 59, 0.75); padding: 14px 16px; border-radius: 10px; max-width: 85%; word-break: break-all; position: relative; border-left: 4px solid #fb923c; box-shadow: 0 4px 10px rgba(0,0,0,0.3); animation: fadeInUp 0.3s ease; border-top: 1px solid rgba(255,255,255,0.05); }
@@ -96,24 +97,28 @@
 <body>
 
     <div class="chat-container">
+        <!-- Header -->
         <div class="chat-header">
             <div class="header-top">
-                <div class="chat-title">✨ Elite Store - Glowing Cloud</div>
+                <div class="chat-title">✨ EliteStore | Note Center</div>
                 <div class="chat-stats" id="totalStats">Loading...</div>
             </div>
             <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search old or similar messages..." oninput="filterMessages()">
         </div>
 
+        <!-- Messages Area -->
         <div class="chat-messages" id="msgList">
             <div class="empty-chat">Loading messages...</div>
         </div>
 
+        <!-- Input Bar -->
         <div class="chat-input-area">
             <textarea class="chat-input" id="msgInput" placeholder="Type a message... (Press Enter to send)" rows="1" onkeydown="checkEnter(event)"></textarea>
             <button class="send-btn" id="actionBtn" onclick="handleSubmit()">Send 🚀</button>
         </div>
     </div>
 
+    <!-- Firebase SDKs -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
