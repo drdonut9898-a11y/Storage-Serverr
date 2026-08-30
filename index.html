@@ -36,7 +36,23 @@
             overflow: hidden;
         }
 
-        /* Background Video Styling */
+        /* Page 1: Original Wallpaper Background */
+        .page-1 {
+            background: linear-gradient(135deg, rgba(9, 13, 22, 0.75), rgba(23, 17, 36, 0.75)), url('wallpaper.jpeg') no-repeat center center;
+            background-blend-mode: overlay;
+            background-size: cover;
+        }
+
+        .page-1::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 14, 23, 0.65);
+            backdrop-filter: blur(10px);
+            z-index: 0;
+        }
+
+        /* Page 2: Video Background Styling */
         .bg-video {
             position: absolute;
             top: 50%;
@@ -50,7 +66,6 @@
             z-index: 0;
         }
 
-        /* Dark Overlay so text is clearly readable over videos */
         .video-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -59,13 +74,18 @@
             z-index: 1;
         }
 
-        /* Ensure Chat & Content stay above the video and overlay */
-        .chat-container, .second-page-content {
+        /* Ensure Content stay above background */
+        .chat-container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .second-page-content {
             position: relative;
             z-index: 2;
         }
 
-        /* Page 2 Specific Content */
+        /* Page 2 Specific Layout */
         .page-2 {
             display: flex;
             flex-direction: column;
@@ -192,13 +212,8 @@
 </head>
 <body>
 
-    <!-- Page 1: Aurora / Snow Video Background -->
+    <!-- Page 1: Original Wallpaper (wallpaper.jpeg) -->
     <section class="page page-1">
-        <video class="bg-video" autoplay muted loop playsinline>
-            <source src="snow-video.mp4" type="video/mp4">
-        </video>
-        <div class="video-overlay"></div>
-
         <div class="chat-container">
             <div class="chat-header">
                 <div class="header-top">
@@ -219,7 +234,7 @@
         </div>
     </section>
 
-    <!-- Page 2: Underwater Coral Video Background -->
+    <!-- Page 2: Underwater Video Background (water-video.mp4) -->
     <section class="page page-2">
         <video class="bg-video" autoplay muted loop playsinline>
             <source src="water-video.mp4" type="video/mp4">
