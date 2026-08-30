@@ -16,11 +16,10 @@
             scroll-behavior: smooth;
             background: #090d16;
             color: #f8fafc;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
 
-        /* Hide scrollbars for Chrome, Safari and Opera */
         html::-webkit-scrollbar, body::-webkit-scrollbar {
             display: none;
         }
@@ -37,27 +36,37 @@
             overflow: hidden;
         }
 
-        /* Page 1: Chat Section */
-        .page-1 {
-            background: linear-gradient(135deg, rgba(9, 13, 22, 0.75), rgba(23, 17, 36, 0.75)), url('wallpaper.jpeg') no-repeat center center;
-            background-blend-mode: overlay;
-            background-size: cover;
-        }
-
-        .page-1::before {
-            content: '';
+        /* Background Video Styling */
+        .bg-video {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 14, 23, 0.65);
-            backdrop-filter: blur(10px);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: cover;
             z-index: 0;
         }
 
-        /* Page 2: Second Animated Section */
+        /* Dark Overlay so text is clearly readable over videos */
+        .video-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 14, 23, 0.55);
+            backdrop-filter: blur(4px);
+            z-index: 1;
+        }
+
+        /* Ensure Chat & Content stay above the video and overlay */
+        .chat-container, .second-page-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Page 2 Specific Content */
         .page-2 {
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.75), rgba(23, 17, 36, 0.75)), url('wallpaper2.gif') no-repeat center center;
-            background-blend-mode: overlay;
-            background-size: cover;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -65,18 +74,7 @@
             gap: 20px;
         }
 
-        .page-2::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 14, 23, 0.60);
-            backdrop-filter: blur(8px);
-            z-index: 0;
-        }
-
         .second-page-content {
-            position: relative;
-            z-index: 1;
             text-align: center;
             background: rgba(30, 41, 59, 0.65);
             backdrop-filter: blur(16px);
@@ -113,8 +111,6 @@
         }
         
         .chat-container { 
-            position: relative;
-            z-index: 1;
             width: 100%; 
             max-width: 680px; 
             height: 92vh; 
@@ -196,8 +192,13 @@
 </head>
 <body>
 
-    <!-- Page 1: Chat and Notes Section -->
+    <!-- Page 1: Aurora / Snow Video Background -->
     <section class="page page-1">
+        <video class="bg-video" autoplay muted loop playsinline>
+            <source src="snow-video.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+
         <div class="chat-container">
             <div class="chat-header">
                 <div class="header-top">
@@ -218,11 +219,16 @@
         </div>
     </section>
 
-    <!-- Page 2: Second Section with Animated Background/GIF -->
+    <!-- Page 2: Underwater Coral Video Background -->
     <section class="page page-2">
+        <video class="bg-video" autoplay muted loop playsinline>
+            <source src="water-video.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+
         <div class="second-page-content">
-            <h2>🌌 EliteStore Animation Zone</h2>
-            <p>Yeh doosra section hai jahan aap apna animated background ya video laga sakte hain.</p>
+            <h2>🐠 EliteStore Underwater Zone</h2>
+            <p>Yeh niche wala underwater coral reef section hai jo loop hoke chal raha hai!</p>
             <div class="scroll-indicator">⬆️ Scroll up to go back to Chat</div>
         </div>
     </section>
