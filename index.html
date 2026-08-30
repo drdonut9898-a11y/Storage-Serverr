@@ -7,29 +7,106 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
-        body { 
-            background: linear-gradient(135deg, #090d16 0%, #171124 50%, #0f172a 100%), url('wallpaper.jpeg') no-repeat center center fixed; 
-            background-blend-mode: overlay;
-            background-size: cover; 
-            color: #f8fafc; 
-            height: 100vh; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            position: relative;
+        /* Smooth Full-Page Scroll Snap */
+        html, body {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            background: #090d16;
+            color: #f8fafc;
         }
 
-        /* Dark Translucent Overlay for Glassmorphism readability */
-        body::before {
+        /* Page Layout */
+        .page {
+            width: 100vw;
+            height: 100vh;
+            scroll-snap-align: start;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Page 1: Chat Section */
+        .page-1 {
+            background: linear-gradient(135deg, rgba(9, 13, 22, 0.75), rgba(23, 17, 36, 0.75)), url('wallpaper.jpeg') no-repeat center center;
+            background-blend-mode: overlay;
+            background-size: cover;
+        }
+
+        .page-1::before {
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 14, 23, 0.70);
+            background: rgba(10, 14, 23, 0.65);
             backdrop-filter: blur(10px);
-            z-index: -1;
+            z-index: 0;
+        }
+
+        /* Page 2: Second Animated Section */
+        .page-2 {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.75), rgba(23, 17, 36, 0.75)), url('wallpaper2.gif') no-repeat center center;
+            background-blend-mode: overlay;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .page-2::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 14, 23, 0.60);
+            backdrop-filter: blur(8px);
+            z-index: 0;
+        }
+
+        .second-page-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            background: rgba(30, 41, 59, 0.65);
+            backdrop-filter: blur(16px);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 25px rgba(56, 189, 248, 0.25);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .second-page-content h2 {
+            color: #38bdf8;
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+        }
+
+        .second-page-content p {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .scroll-indicator {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #fb923c;
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(6px); }
         }
         
         .chat-container { 
+            position: relative;
+            z-index: 1;
             width: 100%; 
             max-width: 680px; 
             height: 92vh; 
@@ -111,24 +188,34 @@
 </head>
 <body>
 
-    <div class="chat-container">
-        <div class="chat-header">
-            <div class="header-top">
-                <div class="chat-title">✨ EliteStore | Note Center</div>
-                <div class="chat-stats" id="totalStats">Loading...</div>
+    <section class="page page-1">
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="header-top">
+                    <div class="chat-title">✨ EliteStore | Note Center</div>
+                    <div class="chat-stats" id="totalStats">Loading...</div>
+                </div>
+                <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search old or similar messages..." oninput="filterMessages()">
             </div>
-            <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search old or similar messages..." oninput="filterMessages()">
-        </div>
 
-        <div class="chat-messages" id="msgList">
-            <div class="empty-chat">Loading messages...</div>
-        </div>
+            <div class="chat-messages" id="msgList">
+                <div class="empty-chat">Loading messages...</div>
+            </div>
 
-        <div class="chat-input-area">
-            <textarea class="chat-input" id="msgInput" placeholder="Type a message... (Press Enter to send)" rows="1" onkeydown="checkEnter(event)" oninput="autoResize(this)"></textarea>
-            <button class="send-btn" id="actionBtn" onclick="handleSubmit()">Send 🚀</button>
+            <div class="chat-input-area">
+                <textarea class="chat-input" id="msgInput" placeholder="Type a message... (Press Enter to send)" rows="1" onkeydown="checkEnter(event)" oninput="autoResize(this)"></textarea>
+                <button class="send-btn" id="actionBtn" onclick="handleSubmit()">Send 🚀</button>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <section class="page page-2">
+        <div class="second-page-content">
+            <h2>🌌 EliteStore Animation Zone</h2>
+            <p>Yeh doosra section hai jahan aap apna animated background ya video laga sakte hain.</p>
+            <div class="scroll-indicator">⬆️ Scroll up to go back to Chat</div>
+        </div>
+    </section>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -224,6 +311,7 @@
         }
 
         window.filterMessages = function() {
+            codeText = document.getElementById('searchInput').value.toLowerCase();
             const queryText = document.getElementById('searchInput').value.toLowerCase();
             const filtered = allMessages.filter(m => m.text.toLowerCase().includes(queryText));
             displayMessages(filtered);
