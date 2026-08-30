@@ -83,11 +83,26 @@
         .delete-btn:hover { background: #ef4444; color: #fff; }
 
         /* Bottom Input Bar */
-        .chat-input-area { padding: 15px 20px; background: rgba(15, 23, 42, 0.85); border-top: 1px solid rgba(255, 255, 255, 0.1); display: flex; gap: 10px; align-items: center; }
-        .chat-input { flex: 1; padding: 12px; background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 10px; color: #fff; font-size: 14px; resize: none; height: 48px; max-height: 120px; outline: none; transition: 0.3s; }
+        .chat-input-area { padding: 15px 20px; background: rgba(15, 23, 42, 0.85); border-top: 1px solid rgba(255, 255, 255, 0.1); display: flex; gap: 10px; align-items: flex-end; }
+        
+        .chat-input { 
+            flex: 1; 
+            padding: 12px; 
+            background: rgba(30, 41, 59, 0.8); 
+            border: 1px solid rgba(255, 255, 255, 0.15); 
+            border-radius: 10px; 
+            color: #fff; 
+            font-size: 14px; 
+            resize: none; 
+            min-height: 48px; 
+            max-height: 120px; 
+            line-height: 1.5;
+            outline: none; 
+            transition: border-color 0.3s, box-shadow 0.3s; 
+        }
         .chat-input:focus { border-color: #fb923c; box-shadow: 0 0 10px rgba(251, 146, 60, 0.4); }
         
-        .send-btn { background: linear-gradient(135deg, #f97316, #3b82f6); border: none; color: white; padding: 0 22px; height: 48px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4); }
+        .send-btn { background: linear-gradient(135deg, #f97316, #3b82f6); border: none; color: white; padding: 0 22px; height: 48px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4); flex-shrink: 0; }
         .send-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5); }
         .send-btn:active { transform: translateY(0); }
 
@@ -97,7 +112,6 @@
 <body>
 
     <div class="chat-container">
-        <!-- Header -->
         <div class="chat-header">
             <div class="header-top">
                 <div class="chat-title">✨ EliteStore | Note Center</div>
@@ -106,19 +120,16 @@
             <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search old or similar messages..." oninput="filterMessages()">
         </div>
 
-        <!-- Messages Area -->
         <div class="chat-messages" id="msgList">
             <div class="empty-chat">Loading messages...</div>
         </div>
 
-        <!-- Input Bar -->
         <div class="chat-input-area">
-            <textarea class="chat-input" id="msgInput" placeholder="Type a message... (Press Enter to send)" rows="1" onkeydown="checkEnter(event)"></textarea>
+            <textarea class="chat-input" id="msgInput" placeholder="Type a message... (Press Enter to send)" rows="1" onkeydown="checkEnter(event)" oninput="autoResize(this)"></textarea>
             <button class="send-btn" id="actionBtn" onclick="handleSubmit()">Send 🚀</button>
         </div>
     </div>
 
-    <!-- Firebase SDKs -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -138,6 +149,11 @@
         
         let allMessages = [];
         let editingId = null;
+
+        window.autoResize = function(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+        }
 
         window.checkEnter = function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -165,6 +181,7 @@
                     });
                 }
                 input.value = '';
+                input.style.height = '48px';
                 loadMessages();
             } catch (e) {
                 alert("Error: " + e.message);
@@ -173,8 +190,10 @@
 
         window.editMessage = function(id, encodedText) {
             const text = decodeURIComponent(encodedText);
-            document.getElementById('msgInput').value = text;
-            document.getElementById('msgInput').focus();
+            const input = document.getElementById('msgInput');
+            input.value = text;
+            autoResize(input);
+            input.focus();
             editingId = id;
             document.getElementById('actionBtn').innerText = "Update ✏️";
         }
@@ -185,7 +204,9 @@
                 await deleteDoc(doc(db, "messages", id));
                 if (editingId === id) {
                     editingId = null;
-                    document.getElementById('msgInput').value = '';
+                    const input = document.getElementById('msgInput');
+                    input.value = '';
+                    input.style.height = '48px';
                     document.getElementById('actionBtn').innerText = "Send 🚀";
                 }
                 loadMessages();
